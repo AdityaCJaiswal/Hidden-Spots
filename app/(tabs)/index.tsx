@@ -13,7 +13,7 @@ import {
 import * as Location from 'expo-location';
 import { gwaliorHiddenSpots, vibeCategories } from '@/data/spots';
 import { HiddenSpot } from '@/types';
-import { Search, Filter, MapPin, Navigation, Compass, Sparkles, TrendingUp } from 'lucide-react-native';
+import { Search, Filter, MapPin, Navigation, Sparkles, TrendingUp, Zap, Grid2x2 as Grid, List } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import SpotCard from '@/components/SpotCard';
 import SpotDetailModal from '@/components/SpotDetailModal';
@@ -26,28 +26,7 @@ import PulsingDot from '@/components/PulsingDot';
 import PremiumButton from '@/components/PremiumButton';
 import { useToast } from '@/hooks/useToast';
 
-// Conditionally import MapView only for native platforms
-let MapView: any = null;
-let Marker: any = null;
-
-if (Platform.OS !== 'web') {
-  try {
-    const MapModule = require('react-native-maps');
-    MapView = MapModule.default;
-    Marker = MapModule.Marker;
-  } catch (error) {
-    console.warn('react-native-maps not available:', error);
-  }
-}
-
 const { width, height } = Dimensions.get('window');
-
-interface Region {
-  latitude: number;
-  longitude: number;
-  latitudeDelta: number;
-  longitudeDelta: number;
-}
 
 export default function DiscoverScreen() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -55,18 +34,11 @@ export default function DiscoverScreen() {
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [showMap, setShowMap] = useState(Platform.OS !== 'web');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const { toast, showToast, hideToast } = useToast();
-
-  const gwaliorRegion: Region = {
-    latitude: 26.2183,
-    longitude: 78.1828,
-    latitudeDelta: 0.1,
-    longitudeDelta: 0.1,
-  };
 
   useEffect(() => {
     getCurrentLocation();
@@ -119,126 +91,124 @@ export default function DiscoverScreen() {
     return cat ? cat.color : '#6B7280';
   };
 
-  const getMarkerColor = (category: string) => {
-    switch (category) {
-      case 'romantic': return '#EC4899';
-      case 'serene': return '#059669';
-      case 'creative': return '#7C3AED';
-      case 'adventure': return '#EA580C';
-      default: return '#6B7280';
-    }
-  };
-
-  const renderWebMap = () => (
-    <View style={styles.webMapContainer}>
-      <GlassCard style={styles.webMapPlaceholder}>
-        <View style={styles.webMapContent}>
-          <Compass size={64} color="#EA580C" strokeWidth={1.5} />
-          <Text style={styles.webMapTitle}>Interactive Map</Text>
-          <Text style={styles.webMapSubtitle}>
-            Map view is available on mobile devices
-          </Text>
-          <View style={styles.webMapStats}>
-            <View style={styles.webMapStat}>
-              <Sparkles size={20} color="#EA580C" />
-              <Text style={styles.webMapStatText}>{filteredSpots.length} hidden spots</Text>
-            </View>
-            <View style={styles.webMapStat}>
-              <TrendingUp size={20} color="#10B981" />
-              <Text style={styles.webMapStatText}>Gwalior, MP</Text>
-            </View>
-          </View>
+  const renderGridItem = (spot: HiddenSpot) => (
+    <TouchableOpacity
+      key={spot.id}
+      style={styles.gridItem}
+      onPress={() => handleSpotPress(spot)}
+      activeOpacity={0.8}
+    >
+      <View style={[styles.gridMarker, { backgroundColor: getCategoryColor(spot.category) + '20' }]}>
+        <MapPin size={20} color={getCategoryColor(spot.category)} strokeWidth={2} />
+      </View>
+      <View style={styles.gridInfo}>
+        <Text style={styles.gridName} numberOfLines={1}>{spot.name}</Text>
+        <Text style={styles.gridCategory}>
+          {spot.category.charAt(0).toUpperCase() + spot.category.slice(1)}
+        </Text>
+        <View style={styles.gridRating}>
+          <Sparkles size={14} color="#FCD34D" fill="#FCD34D" />
+          <Text style={styles.gridRatingText}>{spot.overallRating.toFixed(1)}</Text>
         </View>
-      </GlassCard>
-      
+      </View>
+    </TouchableOpacity>
+  );
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <LoadingSpinner size={50} />
+          <Text style={styles.loadingText}>Discovering hidden spots...</Text>
+        </View>
+      );
+    }
+
+    if (filteredSpots.length === 0) {
+      return (
+        <EmptyState
+          icon={MapPin}
+          title="No spots found"
+          subtitle="Try adjusting your search or explore different categories to discover amazing hidden spots in Gwalior."
+          actionText="Clear Filters"
+          onAction={() => {
+            setSearchQuery('');
+            setSelectedCategory(null);
+          }}
+        />
+      );
+    }
+
+    return (
       <ScrollView 
-        style={styles.webSpotsList} 
+        style={styles.contentContainer}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
         }
       >
-        <View style={styles.webSpotsGrid}>
-          {filteredSpots.map((spot) => (
-            <TouchableOpacity
-              key={spot.id}
-              style={styles.webSpotItem}
-              onPress={() => handleSpotPress(spot)}
-            >
-              <View style={[styles.webSpotMarker, { backgroundColor: getMarkerColor(spot.category) + '20' }]}>
-                <MapPin size={16} color={getMarkerColor(spot.category)} />
+        {/* Stats Card */}
+        <GlassCard style={styles.statsCard}>
+          <View style={styles.statsContent}>
+            <View style={styles.statsHeader}>
+              <Zap size={24} color="#EA580C" strokeWidth={2} />
+              <Text style={styles.statsTitle}>Discovery Hub</Text>
+            </View>
+            <Text style={styles.statsSubtitle}>
+              Explore {filteredSpots.length} hidden gems in Gwalior
+            </Text>
+            <View style={styles.statsRow}>
+              <View style={styles.statItem}>
+                <Sparkles size={16} color="#EA580C" />
+                <Text style={styles.statText}>{filteredSpots.length} spots</Text>
               </View>
-              <View style={styles.webSpotInfo}>
-                <Text style={styles.webSpotName}>{spot.name}</Text>
-                <Text style={styles.webSpotCategory}>
-                  {spot.category.charAt(0).toUpperCase() + spot.category.slice(1)}
-                </Text>
+              <View style={styles.statItem}>
+                <TrendingUp size={16} color="#10B981" />
+                <Text style={styles.statText}>Gwalior, MP</Text>
               </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-    </View>
-  );
+            </View>
+          </View>
+        </GlassCard>
 
-  const renderNativeMap = () => {
-    if (!MapView || !Marker) {
-      return (
-        <View style={styles.mapError}>
-          <MapPin size={48} color="#6B7280" />
-          <Text style={styles.mapErrorText}>Map not available</Text>
+        {/* View Mode Toggle */}
+        <View style={styles.viewModeContainer}>
+          <TouchableOpacity
+            style={[styles.viewModeButton, viewMode === 'grid' && styles.viewModeActive]}
+            onPress={() => setViewMode('grid')}
+          >
+            <Grid size={16} color={viewMode === 'grid' ? '#FFFFFF' : '#6B7280'} />
+            <Text style={[styles.viewModeText, viewMode === 'grid' && styles.viewModeTextActive]}>
+              Grid
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.viewModeButton, viewMode === 'list' && styles.viewModeActive]}
+            onPress={() => setViewMode('list')}
+          >
+            <List size={16} color={viewMode === 'list' ? '#FFFFFF' : '#6B7280'} />
+            <Text style={[styles.viewModeText, viewMode === 'list' && styles.viewModeTextActive]}>
+              List
+            </Text>
+          </TouchableOpacity>
         </View>
-      );
-    }
 
-    return (
-      <View style={styles.mapContainer}>
-        <MapView
-          style={styles.map}
-          initialRegion={gwaliorRegion}
-          showsUserLocation={true}
-          showsMyLocationButton={false}
-          userLocationPriority="high"
-          userLocationUpdateInterval={10000}
-          mapType="standard"
-          showsCompass={false}
-          showsScale={false}
-          showsBuildings={true}
-          showsTraffic={false}
-        >
-          {filteredSpots.map((spot) => (
-            <Marker
-              key={spot.id}
-              coordinate={{
-                latitude: spot.latitude,
-                longitude: spot.longitude,
-              }}
-              title={spot.name}
-              description={spot.description}
-              pinColor={getMarkerColor(spot.category)}
-              onPress={() => handleSpotPress(spot)}
-            />
-          ))}
-        </MapView>
-        
-        <ScrollView
-          horizontal
-          style={styles.spotCardsContainer}
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled
-          decelerationRate="fast"
-          snapToInterval={width * 0.85 + width * 0.15}
-        >
-          {filteredSpots.map((spot) => (
-            <View key={spot.id} style={styles.spotCardWrapper}>
+        {/* Content based on view mode */}
+        {viewMode === 'grid' ? (
+          <View style={styles.gridContainer}>
+            {filteredSpots.map(renderGridItem)}
+          </View>
+        ) : (
+          <View style={styles.listContainer}>
+            {filteredSpots.map((spot) => (
               <SpotCard
+                key={spot.id}
                 spot={spot}
                 onPress={() => handleSpotPress(spot)}
               />
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     );
   };
 
@@ -323,65 +293,8 @@ export default function DiscoverScreen() {
         </ScrollView>
       </LinearGradient>
 
-      {/* Enhanced Toggle View */}
-      {Platform.OS !== 'web' && (
-        <GlassCard style={styles.toggleContainer} intensity={95}>
-          <View style={styles.toggleButtons}>
-            <PremiumButton
-              title="Map View"
-              onPress={() => setShowMap(true)}
-              variant={showMap ? 'primary' : 'ghost'}
-              size="small"
-              icon={<MapPin size={16} color={showMap ? '#FFFFFF' : '#6B7280'} />}
-              style={styles.toggleButton}
-            />
-            <PremiumButton
-              title="List View"
-              onPress={() => setShowMap(false)}
-              variant={!showMap ? 'primary' : 'ghost'}
-              size="small"
-              style={styles.toggleButton}
-            />
-          </View>
-        </GlassCard>
-      )}
-
-      {/* Content with Loading States */}
-      {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <LoadingSpinner size={50} />
-          <Text style={styles.loadingText}>Discovering hidden spots...</Text>
-        </View>
-      ) : filteredSpots.length === 0 ? (
-        <EmptyState
-          icon={MapPin}
-          title="No spots found"
-          subtitle="Try adjusting your search or explore different categories to discover amazing hidden spots in Gwalior."
-          actionText="Clear Filters"
-          onAction={() => {
-            setSearchQuery('');
-            setSelectedCategory(null);
-          }}
-        />
-      ) : showMap ? (
-        Platform.OS === 'web' ? renderWebMap() : renderNativeMap()
-      ) : (
-        <ScrollView 
-          style={styles.listContainer} 
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-          }
-        >
-          {filteredSpots.map((spot) => (
-            <SpotCard
-              key={spot.id}
-              spot={spot}
-              onPress={() => handleSpotPress(spot)}
-            />
-          ))}
-        </ScrollView>
-      )}
+      {/* Main Content */}
+      {renderContent()}
 
       {/* Enhanced Floating Action Button */}
       <FloatingActionButton
@@ -393,10 +306,7 @@ export default function DiscoverScreen() {
             <Navigation size={24} color="#FFFFFF" />
           )
         }
-        style={[
-          styles.locationButton,
-          { bottom: (showMap && Platform.OS !== 'web') ? 240 : 80 }
-        ]}
+        style={styles.locationButton}
         colors={['#EA580C', '#DC2626', '#B91C1C']}
       />
 
@@ -507,148 +417,157 @@ const styles = StyleSheet.create({
   categoryButtonTextActive: {
     color: '#1E3A8A',
   },
-  toggleContainer: {
-    marginHorizontal: 20,
-    marginVertical: 16,
-  },
-  toggleButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  toggleButton: {
-    flex: 1,
-  },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 16,
+    paddingVertical: 100,
   },
   loadingText: {
     fontSize: 16,
     fontFamily: 'Inter-Medium',
     color: '#6B7280',
   },
-  mapContainer: {
+  contentContainer: {
     flex: 1,
-    position: 'relative',
   },
-  map: {
-    width: '100%',
-    height: '100%',
-  },
-  mapError: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F9FAFB',
-  },
-  mapErrorText: {
-    fontSize: 16,
-    fontFamily: 'Inter-Medium',
-    color: '#6B7280',
-    marginTop: 12,
-  },
-  webMapContainer: {
-    flex: 1,
-    backgroundColor: '#F9FAFB',
-  },
-  webMapPlaceholder: {
+  statsCard: {
     marginHorizontal: 20,
     marginTop: 16,
+    marginBottom: 20,
   },
-  webMapContent: {
+  statsContent: {
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 20,
   },
-  webMapTitle: {
+  statsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 8,
+  },
+  statsTitle: {
     fontSize: 24,
     fontFamily: 'Playfair-Bold',
     color: '#1F2937',
-    marginTop: 16,
-    marginBottom: 8,
+    letterSpacing: -0.3,
   },
-  webMapSubtitle: {
-    fontSize: 14,
+  statsSubtitle: {
+    fontSize: 16,
     fontFamily: 'Inter-Regular',
     color: '#6B7280',
     marginBottom: 20,
     textAlign: 'center',
+    lineHeight: 22,
   },
-  webMapStats: {
+  statsRow: {
     flexDirection: 'row',
-    gap: 24,
+    gap: 32,
   },
-  webMapStat: {
+  statItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
-  webMapStatText: {
-    fontSize: 14,
+  statText: {
+    fontSize: 16,
     fontFamily: 'Inter-SemiBold',
     color: '#374151',
   },
-  webSpotsList: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 16,
-  },
-  webSpotsGrid: {
-    gap: 12,
-  },
-  webSpotItem: {
+  viewModeContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 16,
+    marginHorizontal: 20,
+    marginBottom: 20,
     borderRadius: 16,
+    padding: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
   },
-  webSpotMarker: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  viewModeButton: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    gap: 8,
   },
-  webSpotInfo: {
-    flex: 1,
+  viewModeActive: {
+    backgroundColor: '#EA580C',
   },
-  webSpotName: {
-    fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
-    color: '#1F2937',
-    marginBottom: 4,
-  },
-  webSpotCategory: {
+  viewModeText: {
     fontSize: 14,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-SemiBold',
     color: '#6B7280',
   },
-  spotCardsContainer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
-    height: 200,
+  viewModeTextActive: {
+    color: '#FFFFFF',
   },
-  spotCardWrapper: {
-    width: width * 0.85,
-    marginHorizontal: width * 0.075,
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 20,
+    gap: 16,
+    paddingBottom: 100,
+  },
+  gridItem: {
+    width: (width - 56) / 2,
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 6,
+    alignItems: 'center',
+  },
+  gridMarker: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  gridInfo: {
+    alignItems: 'center',
+    width: '100%',
+  },
+  gridName: {
+    fontSize: 16,
+    fontFamily: 'Playfair-SemiBold',
+    color: '#1F2937',
+    marginBottom: 4,
+    textAlign: 'center',
+    letterSpacing: -0.2,
+  },
+  gridCategory: {
+    fontSize: 12,
+    fontFamily: 'Inter-Medium',
+    color: '#6B7280',
+    marginBottom: 12,
+  },
+  gridRating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  gridRatingText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Bold',
+    color: '#EA580C',
   },
   listContainer: {
-    flex: 1,
-    paddingVertical: 8,
+    paddingBottom: 100,
   },
   locationButton: {
     position: 'absolute',
     right: 20,
+    bottom: 100,
   },
 });

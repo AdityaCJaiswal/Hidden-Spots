@@ -13,7 +13,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { vibeCategories } from '@/data/spots';
-import { Camera, MapPin, Plus, X, Save, Navigation, Star, Users, Shield, Sparkles, Map, Image as ImageIcon, Zap } from 'lucide-react-native';
+import { Camera, MapPin, Plus, X, Save, Navigation, Star, Users, Shield, Sparkles, Image as ImageIcon, Zap } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import Toast from '@/components/Toast';
@@ -21,20 +21,6 @@ import GlassCard from '@/components/GlassCard';
 import PremiumButton from '@/components/PremiumButton';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { useToast } from '@/hooks/useToast';
-
-// Conditionally import MapView only for native platforms
-let MapView: any = null;
-let Marker: any = null;
-
-if (Platform.OS !== 'web') {
-  try {
-    const MapModule = require('react-native-maps');
-    MapView = MapModule.default;
-    Marker = MapModule.Marker;
-  } catch (error) {
-    console.warn('react-native-maps not available:', error);
-  }
-}
 
 const { width } = Dimensions.get('window');
 
@@ -77,8 +63,6 @@ export default function AddSpotScreen() {
 
   const [newTip, setNewTip] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showMapPicker, setShowMapPicker] = useState(false);
-  const [tempLocation, setTempLocation] = useState<{latitude: number; longitude: number} | null>(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
   const { toast, showToast, hideToast } = useToast();

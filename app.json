@@ -18,7 +18,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.hiddenspots",
+      "bundleIdentifier": "com.hiddenspots.app",
       "buildNumber": "1"
     },
     "android": {
@@ -28,7 +28,7 @@
         "CAMERA",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "package": "com.yourcompany.hiddenspots",
+      "package": "com.hiddenspots.app",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -54,11 +54,6 @@
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "eas": {
-        "projectId": "your-project-id-here"
-      }
     }
   }
 }

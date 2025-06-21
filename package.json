@@ -10,7 +10,11 @@
     "build:apk": "eas build --platform android --profile preview",
     "build:aab": "eas build --platform android --profile production",
     "build:local-apk": "npx expo run:android --variant release",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "generate-assets": "npm run generate-icons && npm run generate-splash",
+    "generate-icons": "npx sharp -i assets/images/icon.svg -o assets/images/icon.png --resize 1024 && npx sharp -i assets/images/adaptive-icon.svg -o assets/images/adaptive-icon.png --resize 1024",
+    "generate-splash": "npx sharp -i assets/images/splash.svg -o assets/images/splash.png --resize 1080x1920",
+    "generate-favicon": "npx sharp -i assets/images/favicon.svg -o assets/images/favicon.png --resize 32"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -54,6 +58,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "sharp-cli": "^4.2.0"
   }
 }
