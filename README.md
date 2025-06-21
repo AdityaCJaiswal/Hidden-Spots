@@ -2,7 +2,11 @@
 
 A premium React Native app built with Expo that helps users discover and share hidden gems in Gwalior, Madhya Pradesh. Experience the city like never before with our community-driven platform featuring stunning UI, smooth animations, and delightful interactions.
 
+<<<<<<< HEAD
 ![Hidden Spots Hero](https://images.pexels.com/photos/1770809/pexels-photo-1770809.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop)
+=======
+![Hidden Spots App](https://images.pexels.com/photos/1770809/pexels-photo-1770809.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop)
+>>>>>>> e6f03b952416ef2016d2b6e9ed4878c301cb19a2
 
 ## ✨ Features
 
@@ -35,6 +39,7 @@ A premium React Native app built with Expo that helps users discover and share h
 - **Gesture-driven animations** with proper feedback
 - **Loading states** with skeleton loaders
 
+<<<<<<< HEAD
 ## 📸 App Screenshots
 
 ### Discover Screen - Interactive Map & Search
@@ -83,6 +88,8 @@ Seamless experience across iOS, Android, and Web with platform-specific optimiza
 
 *iOS with native blur effects | Android with material design | Web with responsive layout*
 
+=======
+>>>>>>> e6f03b952416ef2016d2b6e9ed4878c301cb19a2
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -152,11 +159,19 @@ Seamless experience across iOS, Android, and Web with platform-specific optimiza
   - Creative: #7C3AED
   - Adventure: #EA580C
 
+<<<<<<< HEAD
 ### Component Showcase
 
 ![Design System](https://images.pexels.com/photos/1612461/pexels-photo-1612461.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop)
 
 *Premium components: GlassCard, PremiumButton, ParallaxScrollView, PulsingDot, and more*
+=======
+### Components
+- **GlassCard**: Glassmorphism effects with platform-specific implementations
+- **PremiumButton**: Advanced animated buttons with haptic feedback
+- **ParallaxScrollView**: Smooth parallax scrolling
+- **PulsingDot**: Animated location indicators
+>>>>>>> e6f03b952416ef2016d2b6e9ed4878c301cb19a2
 
 ## 🏗️ Architecture
 
@@ -210,11 +225,27 @@ types/
 - **Efficient state management**
 - **Minimal re-renders** with proper memoization
 
+<<<<<<< HEAD
 ## 🎭 Animation Showcase
 
 ![Animations Demo](https://images.pexels.com/photos/1770809/pexels-photo-1770809.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop)
 
 *Smooth 60fps animations: Parallax scrolling, gesture interactions, shimmer effects, and spring physics*
+=======
+## 📸 Screenshots
+
+### Discover Screen
+Beautiful map integration with category filtering and search functionality.
+
+### Add Spot Screen
+Intuitive form with parallax scrolling, photo upload, and rating system.
+
+### Spot Details
+Immersive modal with photo gallery, community reviews, and interactive elements.
+
+### Profile Screen
+Clean profile interface with achievements, statistics, and activity tracking.
+>>>>>>> e6f03b952416ef2016d2b6e9ed4878c301cb19a2
 
 ## 🔧 Development
 
@@ -246,6 +277,7 @@ npm run build:web
 ### Mobile App Stores
 This app is ready for production deployment to both iOS App Store and Google Play Store using Expo Application Services (EAS).
 
+<<<<<<< HEAD
 ![Deployment Ready](https://images.pexels.com/photos/1194420/pexels-photo-1194420.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop)
 
 *Production-ready with proper app icons, splash screens, and store assets*
@@ -270,6 +302,8 @@ This app is ready for production deployment to both iOS App Store and Google Pla
 - **Offline support** considerations for better user experience
 - **App store ready** with proper metadata and assets
 
+=======
+>>>>>>> e6f03b952416ef2016d2b6e9ed4878c301cb19a2
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -298,6 +332,7 @@ For support, email support@hiddenspots.app or join our community Discord.
 **Built with ❤️ using Expo and React Native**
 
 *Discover the hidden beauty of Gwalior, one spot at a time.*
+<<<<<<< HEAD
 
 ### 🎯 Perfect for Portfolio
 
@@ -309,3 +344,5 @@ This app demonstrates:
 - **Performance optimization** with 60fps animations and efficient rendering
 
 Ready to impress employers, clients, and the React Native community! 🚀
+=======
+>>>>>>> e6f03b952416ef2016d2b6e9ed4878c301cb19a2
