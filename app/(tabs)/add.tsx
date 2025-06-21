@@ -70,20 +70,24 @@ export default function AddSpotScreen() {
   const pickImage = async () => {
     try {
       setPhotoLoading(true);
+      
+      // Request permissions
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         showToast('warning', 'Camera roll permissions required to add photos');
         return;
       }
 
+      // Launch image picker with proper options
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaType.Images,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // Use MediaTypeOptions instead of MediaType
         allowsEditing: true,
         aspect: [16, 9],
         quality: 0.8,
+        allowsMultipleSelection: false,
       });
 
-      if (!result.canceled && result.assets[0]) {
+      if (!result.canceled && result.assets && result.assets[0]) {
         setFormData(prev => ({
           ...prev,
           photos: [...prev.photos, result.assets[0].uri],
@@ -101,20 +105,23 @@ export default function AddSpotScreen() {
   const takePhoto = async () => {
     try {
       setPhotoLoading(true);
+      
+      // Request camera permissions
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== 'granted') {
         showToast('warning', 'Camera permissions required to take photos');
         return;
       }
 
+      // Launch camera with proper options
       const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaType.Images,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // Use MediaTypeOptions instead of MediaType
         allowsEditing: true,
         aspect: [16, 9],
         quality: 0.8,
       });
 
-      if (!result.canceled && result.assets[0]) {
+      if (!result.canceled && result.assets && result.assets[0]) {
         setFormData(prev => ({
           ...prev,
           photos: [...prev.photos, result.assets[0].uri],
@@ -149,20 +156,39 @@ export default function AddSpotScreen() {
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
-      const address = await Location.reverseGeocodeAsync({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
-
-      setFormData(prev => ({
-        ...prev,
-        location: {
+      
+      // Get address from coordinates
+      try {
+        const address = await Location.reverseGeocodeAsync({
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
-          address: address[0] ? `${address[0].street || ''}, ${address[0].city || 'Unknown location'}`.trim().replace(/^,\s*/, '') : 'Unknown location',
-        },
-      }));
-      showToast('success', 'Location set successfully');
+        });
+
+        const addressString = address[0] 
+          ? `${address[0].street || ''}, ${address[0].city || 'Unknown location'}`.trim().replace(/^,\s*/, '') 
+          : 'Unknown location';
+
+        setFormData(prev => ({
+          ...prev,
+          location: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            address: addressString,
+          },
+        }));
+        showToast('success', 'Location set successfully');
+      } catch (addressError) {
+        console.warn('Could not get address:', addressError);
+        setFormData(prev => ({
+          ...prev,
+          location: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            address: 'Location coordinates captured',
+          },
+        }));
+        showToast('success', 'Location coordinates captured');
+      }
     } catch (error) {
       console.error('Error getting location:', error);
       showToast('error', 'Failed to get current location');
