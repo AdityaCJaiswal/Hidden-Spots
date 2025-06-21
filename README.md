@@ -40,48 +40,35 @@ A premium React Native app built with Expo that helps users discover and share h
 ### Discover Screen - Interactive Map & Search
 Experience beautiful map integration with category filtering and intelligent search functionality.
 
-![Discover Screen](https://images.pexels.com/photos/1194420/pexels-photo-1194420.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop)
+![Discover Screen](assets/images/home.jpg)
 
 *Features: Real-time location tracking, category filters, glassmorphism search bar, and smooth map interactions*
 
 ### Spot Listing - Premium Card Design
 Browse hidden spots with our elegantly designed cards featuring ratings, categories, and community insights.
 
-![Spots Listing](https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop)
+![Spots Listing](assets/images/list.jpg)
 
 *Features: Advanced filtering, sorting options, skeleton loading states, and pull-to-refresh*
 
 ### Add New Spot - Parallax Form Experience
 Share your discoveries with our intuitive parallax form featuring photo upload, location selection, and rating system.
 
-![Add Spot Screen](https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop)
+![Add Spot Screen](assets/images/form.jpg)
 
 *Features: Parallax scrolling, camera integration, GPS location, star ratings, and form validation*
 
-### Spot Details - Immersive Modal
-Dive deep into spot details with our immersive modal featuring photo galleries, community reviews, and interactive elements.
 
-![Spot Details Modal](https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop)
 
-*Features: Photo gallery with thumbnails, community experiences, rating breakdown, and visitor tips*
 
 ### User Profile - Achievement System
 Track your exploration journey with achievements, statistics, and activity history.
 
-![Profile Screen](https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop)
+![Profile Screen](assets/images/profile.jpg)
 
 *Features: Achievement badges, exploration statistics, favorite spots, and activity timeline*
 
-### Cross-Platform Excellence
-Seamless experience across iOS, Android, and Web with platform-specific optimizations.
 
-<div style="display: flex; gap: 20px; justify-content: center; margin: 20px 0;">
-  <img src="https://images.pexels.com/photos/1109354/pexels-photo-1109354.jpeg?auto=compress&cs=tinysrgb&w=300&h=600&fit=crop" alt="iOS Experience" width="200"/>
-  <img src="https://images.pexels.com/photos/1300510/pexels-photo-1300510.jpeg?auto=compress&cs=tinysrgb&w=300&h=600&fit=crop" alt="Android Experience" width="200"/>
-  <img src="https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=300&h=600&fit=crop" alt="Web Experience" width="200"/>
-</div>
-
-*iOS with native blur effects | Android with material design | Web with responsive layout*
 
 ## 🚀 Getting Started
 
@@ -152,11 +139,6 @@ Seamless experience across iOS, Android, and Web with platform-specific optimiza
   - Creative: #7C3AED
   - Adventure: #EA580C
 
-### Component Showcase
-
-![Design System](https://images.pexels.com/photos/1612461/pexels-photo-1612461.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop)
-
-*Premium components: GlassCard, PremiumButton, ParallaxScrollView, PulsingDot, and more*
 
 ## 🏗️ Architecture
 
@@ -210,11 +192,7 @@ types/
 - **Efficient state management**
 - **Minimal re-renders** with proper memoization
 
-## 🎭 Animation Showcase
 
-![Animations Demo](https://images.pexels.com/photos/1770809/pexels-photo-1770809.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop)
-
-*Smooth 60fps animations: Parallax scrolling, gesture interactions, shimmer effects, and spring physics*
 
 ## 🔧 Development
 
@@ -246,7 +224,6 @@ npm run build:web
 ### Mobile App Stores
 This app is ready for production deployment to both iOS App Store and Google Play Store using Expo Application Services (EAS).
 
-![Deployment Ready](https://images.pexels.com/photos/1194420/pexels-photo-1194420.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop)
 
 *Production-ready with proper app icons, splash screens, and store assets*
 
